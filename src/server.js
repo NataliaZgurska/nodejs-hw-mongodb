@@ -24,7 +24,7 @@ export const setupServer = () => {
     const contacts = await getAllContacts();
     res.json({
       status: 200,
-      message: 'Successfully found contacts!',
+      message: 'Successfully found contacts!!',
       data: contacts,
     });
   });
@@ -34,7 +34,7 @@ export const setupServer = () => {
     if (!mongoose.isValidObjectId(id)) {
       return res.status(404).json({
         status: 400,
-        message: `Wrong id ${id}!`,
+        message: `Wrong id ${id}! Change it`,
       });
     }
 
