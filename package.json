@@ -16,14 +16,16 @@
     "@eslint/js": "^9.3.0",
     "eslint": "^9.3.0",
     "globals": "^15.3.0",
-    "nodemon": "^3.1.1",
+    "nodemon": "^3.1.2",
     "pino-http": "^10.1.0",
     "pino-pretty": "^11.1.0"
   },
   "dependencies": {
+    "chalk": "^5.3.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "http-errors": "^2.0.0",
     "mongodb": "^6.6.2",
     "mongoose": "^8.4.0"
   }
