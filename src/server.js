@@ -3,6 +3,7 @@ import pino from 'pino-http';
 import cors from 'cors';
 import { env } from './utils/env.js';
 import { getAllContacts, getContactsById } from './services/contacts.js';
+import mongoose from 'mongoose';
 
 const PORT = Number(env('PORT', '3000'));
 
@@ -30,6 +31,13 @@ export const setupServer = () => {
 
   app.get('/contacts/:contactId', async (req, res) => {
     const id = req.params.contactId;
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(404).json({
+        status: 400,
+        message: `Wrong id ${id}!`,
+      });
+    }
+
     const contact = await getContactsById(id);
 
     if (!contact) {
