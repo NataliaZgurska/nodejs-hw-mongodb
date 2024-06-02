@@ -1,10 +1,9 @@
-import createHttpError from 'http-errors';
 import {
   createContact,
   deleteContact,
   getAllContacts,
   getContactsById,
-  updateContact,
+  upsertContact,
 } from '../services/contacts.js';
 import mongoose from 'mongoose';
 
@@ -43,34 +42,56 @@ export const getContactByIdController = async (req, res) => {
 };
 
 export const createContactController = async (req, res) => {
-  const contact = await createContact(req.body);
+  const { body } = req;
+  const contact = await createContact(body);
   res.status(201).json({
     status: 201,
     message: 'Successfully created a contact!',
-    data: contacts,
+    data: contact,
   });
 };
 
-export const patchContactController = async (req, res, next) => {
-  const id = req.params.contactId;
-  if (!mongoose.isValidObjectId(id)) {
+export const patchContactController = async (req, res) => {
+  const { body } = req;
+
+  const { contactId } = req.params;
+  if (!mongoose.isValidObjectId(contactId)) {
     return res.status(400).json({
       status: 400,
-      message: `Wrong id ${id}!`,
+      message: `Wrong id ${contactId}!`,
     });
   }
 
-  const result = await updateContact(id, req.body);
+  const { contact } = await upsertContact(contactId, body);
 
-  if (!result) {
-    next(createHttpError(404, 'Student not foud'));
-    return;
+  res.status(200).json({
+    status: 200,
+    message: `Successfully patched contact!`,
+    data: contact,
+  });
+};
+
+export const upsertContactController = async (req, res) => {
+  const { body } = req;
+
+  const { contactId } = req.params;
+  if (!mongoose.isValidObjectId(contactId)) {
+    return res.status(400).json({
+      status: 400,
+      message: `Wrong id ${contactId}!`,
+    });
   }
 
-  res.json({
-    status: 200,
-    message: `Successfully patched a contact!`,
-    data: result.contact,
+  const { isNew, contact } = await upsertContact(contactId, body, {
+    upsert: true,
+  });
+
+  const status = isNew ? 201 : 200;
+
+  res.status(status).json({
+    status,
+    message: `Successfully upserted contact!`,
+    data: contact,
   });
 };
 
@@ -83,15 +104,14 @@ export const deleteContactController = async (req, res) => {
     });
   }
 
-  const contact = await deleteContact(id);
-
+  const contact = await getContactsById(id);
   if (!contact) {
-    next(createHttpError(404, `Contact with id ${id} not found!`));
-    return;
+    return res.status(404).json({
+      status: 404,
+      message: `Contact with id ${id} not found!`,
+    });
   }
 
-  res.status(204).json({
-    status: 204,
-    message: `Contact with id ${id} deleted`,
-  });
+  await deleteContact(id);
+  res.status(204).send();
 };
