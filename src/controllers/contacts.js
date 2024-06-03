@@ -3,6 +3,7 @@ import {
   deleteContact,
   getAllContacts,
   getContactsById,
+  updateContact,
   upsertContact,
 } from '../services/contacts.js';
 import mongoose from 'mongoose';
@@ -62,8 +63,7 @@ export const patchContactController = async (req, res) => {
     });
   }
 
-  const { contact } = await upsertContact(contactId, body);
-
+  const contact = await updateContact(contactId, body);
   res.status(200).json({
     status: 200,
     message: `Successfully patched contact!`,
@@ -71,7 +71,7 @@ export const patchContactController = async (req, res) => {
   });
 };
 
-export const upsertContactController = async (req, res) => {
+export const putContactController = async (req, res) => {
   const { body } = req;
 
   const { contactId } = req.params;
@@ -87,7 +87,6 @@ export const upsertContactController = async (req, res) => {
   });
 
   const status = isNew ? 201 : 200;
-
   res.status(status).json({
     status,
     message: `Successfully upserted contact!`,
@@ -109,9 +108,13 @@ export const deleteContactController = async (req, res) => {
     return res.status(404).json({
       status: 404,
       message: `Contact with id ${id} not found!`,
+      data: { message: 'Contact not found!' },
     });
   }
 
   await deleteContact(id);
-  res.status(204).send();
+  res.json({
+    status: 204,
+    message: 'Successfully deleted a contact!',
+  });
 };
