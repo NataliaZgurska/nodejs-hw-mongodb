@@ -3,7 +3,6 @@ import {
   deleteContact,
   getAllContacts,
   getContactsById,
-  updateContact,
   upsertContact,
 } from '../services/contacts.js';
 import mongoose from 'mongoose';
@@ -63,7 +62,7 @@ export const patchContactController = async (req, res) => {
     });
   }
 
-  const contact = await updateContact(contactId, body);
+  const { contact } = await upsertContact(contactId, body);
   res.status(200).json({
     status: 200,
     message: `Successfully patched contact!`,
