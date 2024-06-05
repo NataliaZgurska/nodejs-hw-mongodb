@@ -1,6 +1,7 @@
+import createHttpError from 'http-errors';
 import {
   createContact,
-  deleteContact,
+  deleteContactById,
   getAllContacts,
   getContactsById,
   upsertContact,
@@ -93,27 +94,21 @@ export const putContactController = async (req, res) => {
   });
 };
 
-export const deleteContactController = async (req, res) => {
-  const id = req.params.contactId;
-  if (!mongoose.isValidObjectId(id)) {
+export const deleteContactByIdController = async (req, res, next) => {
+  const { contactId } = req.params;
+  if (!mongoose.isValidObjectId(contactId)) {
     return res.status(400).json({
       status: 400,
-      message: `Wrong id ${id}!`,
+      message: `Wrong id ${contactId}!`,
     });
   }
 
-  const contact = await getContactsById(id);
+  const contact = await deleteContactById(contactId);
+
   if (!contact) {
-    return res.status(404).json({
-      status: 404,
-      message: `Contact with id ${id} not found!`,
-      data: { message: 'Contact not found!' },
-    });
+    next(createHttpError(404, 'Contact not found!'));
+    return;
   }
 
-  await deleteContact(id);
-  res.json({
-    status: 204,
-    message: 'Successfully deleted a contact!',
-  });
+  res.status(204).send();
 };

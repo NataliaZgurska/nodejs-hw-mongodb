@@ -33,6 +33,5 @@ export const upsertContact = async (id, payload, options = {}) => {
   };
 };
 
-export const deleteContact = async (contactId) => {
-  await ContactsCollection.findByIdAndDelete(contactId);
-};
+export const deleteContactById = (contactId) =>
+  ContactsCollection.findByIdAndDelete(contactId);

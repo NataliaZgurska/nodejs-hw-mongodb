@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
   createContactController,
-  deleteContactController,
+  deleteContactByIdController,
   getAllContactsController,
   getContactByIdController,
   patchContactController,
@@ -29,7 +29,7 @@ contactsRouter.put('/contacts/:contactId', ctrlWrapper(putContactController));
 
 contactsRouter.delete(
   '/contacts/:contactId',
-  ctrlWrapper(deleteContactController),
+  ctrlWrapper(deleteContactByIdController),
 );
 
 export default contactsRouter;
