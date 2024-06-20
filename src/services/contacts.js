@@ -9,6 +9,7 @@ export const getAllContacts = async ({
   sortOrder = SORT_ORDER.ASC,
   sortBy = '_id',
   filter = {},
+  contactOwnerId,
 }) => {
   const limit = perPage;
   const skip = (page - 1) * perPage;
@@ -22,9 +23,12 @@ export const getAllContacts = async ({
     contactsQuery.where('isFavourite').equals(filter.isFavourite);
   }
 
+  contactsQuery.where('userId').equals(contactOwnerId);
+
   const [contactsCount, contacts] = await Promise.all([
     ContactsCollection.find().merge(contactsQuery).countDocuments(),
-    contactsQuery
+    ContactsCollection.find()
+      .merge(contactsQuery)
       .skip(skip)
       .limit(limit)
       .sort({ [sortBy]: sortOrder })
@@ -39,26 +43,46 @@ export const getAllContacts = async ({
   };
 };
 
-export const getContactsById = async (contactId) => {
-  const contact = await ContactsCollection.findById(contactId);
-  return contact;
-};
-
-export const createContact = async (payload) => {
-  const contact = await ContactsCollection.create(payload);
-  return contact;
-};
-
-export const upsertContact = async (id, payload, options = {}) => {
-  const rawResult = await ContactsCollection.findByIdAndUpdate(id, payload, {
-    new: true,
-    includeResultMetadata: true,
-    ...options,
+export const getContactsById = async (contactId, contactOwnerId) => {
+  const contact = await ContactsCollection.findOne({
+    _id: contactId,
+    userId: contactOwnerId,
   });
 
-  if (!rawResult || !rawResult.value) {
-    throw createHttpError(404, 'Contact not found');
+  return contact;
+};
+
+export const createContact = async (payload, userId) => {
+  const contact = await ContactsCollection.create({
+    ...payload,
+    userId: userId,
+  });
+  return contact;
+};
+
+export const upsertContact = async (
+  contactId,
+  payload,
+  contactOwnerId,
+  options = {},
+) => {
+  const contact = await ContactsCollection.findOne({
+    _id: contactId,
+    userId: contactOwnerId,
+  });
+  if (!contact) {
+    throw createHttpError(403, 'This is not you contact!');
   }
+
+  const rawResult = await ContactsCollection.findByIdAndUpdate(
+    contactId,
+    payload,
+    {
+      new: true,
+      includeResultMetadata: true,
+      ...options,
+    },
+  );
 
   return {
     contact: rawResult.value,
@@ -66,5 +90,16 @@ export const upsertContact = async (id, payload, options = {}) => {
   };
 };
 
-export const deleteContactById = (contactId) =>
-  ContactsCollection.findByIdAndDelete(contactId);
+export const deleteContactById = async (contactId, contactOwnerId) => {
+  const contact = await ContactsCollection.findOne({
+    _id: contactId,
+    userId: contactOwnerId,
+  });
+  if (!contact) {
+    throw createHttpError(403, 'This is not you contact!');
+  }
+
+  ContactsCollection.findByIdAndDelete({
+    _id: contactId,
+  });
+};
