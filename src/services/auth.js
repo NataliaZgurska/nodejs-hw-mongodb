@@ -3,7 +3,18 @@ import bcrypt from 'bcrypt';
 import createHttpError from 'http-errors';
 import { User } from '../db/models/user.js';
 import { Session } from '../db/models/session.js';
-import { FIFTEEN_MINUTES, THIRTY_DAYS } from '../constants/index.js';
+import {
+  FIFTEEN_MINUTES,
+  SMTP,
+  TEMPLATES_DIR,
+  THIRTY_DAYS,
+} from '../constants/index.js';
+import jwt from 'jsonwebtoken';
+import { sendEmail } from '../utils/sendMail.js';
+import { env } from '../utils/env.js';
+import handlebars from 'handlebars';
+import path from 'node:path';
+import fs from 'node:fs/promises';
 
 const createSession = () => {
   return {
@@ -78,4 +89,76 @@ export const refreshSession = async ({ sessionId, sessionToken }) => {
     userId: user._id,
     ...createSession(),
   });
+};
+
+//відправка листа для зміни пароля
+export const requestResetToken = async (email) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  const resetToken = jwt.sign(
+    {
+      sub: user._id,
+      email,
+    },
+    env('JWT_SECRET'),
+    {
+      expiresIn: '5m',
+    },
+  );
+  console.log('resetToken', resetToken);
+
+  const resetPasswordTemplatePath = path.join(
+    TEMPLATES_DIR,
+    'reset-password-email.html',
+  );
+
+  const templateSource = (
+    await fs.readFile(resetPasswordTemplatePath)
+  ).toString();
+
+  const template = handlebars.compile(templateSource);
+  const html = template({
+    name: user.name,
+    link: `${env('APP_DOMAIN')}/reset-password?token=${resetToken}`,
+  });
+
+  try {
+    await sendEmail({
+      from: env(SMTP.SMTP_FROM),
+      to: email,
+      subject: 'Reset your password',
+      html,
+    });
+  } catch (error) {
+    console.log(error);
+    throw createHttpError(500, 'Problem with sending emails');
+  }
+};
+
+//зміна пароля
+export const resetPassword = async ({ token, password }) => {
+  let entries;
+
+  try {
+    entries = jwt.verify(token, env('JWT_SECRET'));
+  } catch (err) {
+    if (err instanceof Error) throw createHttpError(401, err.message);
+    throw err;
+  }
+
+  const user = await User.findOne({
+    email: entries.email,
+    _id: entries.sub,
+  });
+
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  const encryptedPassword = await bcrypt.hash(password, 10);
+
+  await User.updateOne({ _id: user._id }, { password: encryptedPassword });
 };

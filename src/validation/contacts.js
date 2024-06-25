@@ -33,6 +33,8 @@ export const createContactSchema = Joi.object({
     'any.required': 'Contacttype is required',
   }),
   userId: Joi.string(),
+
+  photo: Joi.string(),
 });
 
 export const updateContactSchema = Joi.object({
@@ -66,4 +68,5 @@ export const updateContactSchema = Joi.object({
   }),
 
   userId: Joi.string(),
+  photo: Joi.string(),
 });

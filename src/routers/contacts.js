@@ -14,6 +14,7 @@ import {
   updateContactSchema,
 } from '../validation/contacts.js';
 import { authenticate } from '../middleware/authenticate.js';
+import { upload } from '../middleware/upload.js';
 
 const contactsRouter = Router();
 
@@ -25,18 +26,21 @@ contactsRouter.get('/:contactId', ctrlWrapper(getContactByIdController));
 
 contactsRouter.post(
   '/',
+  upload.single('photo'),
   validateBody(createContactSchema),
   ctrlWrapper(createContactController),
 );
 
 contactsRouter.patch(
   '/:contactId',
+  upload.single('photo'),
   validateBody(updateContactSchema),
   ctrlWrapper(patchContactController),
 );
 
 contactsRouter.put(
   '/:contactId',
+  upload.single('photo'),
   validateBody(updateContactSchema),
   ctrlWrapper(putContactController),
 );
