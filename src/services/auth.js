@@ -108,7 +108,6 @@ export const requestResetToken = async (email) => {
       expiresIn: '5m',
     },
   );
-  console.log('resetToken', resetToken);
 
   const resetPasswordTemplatePath = path.join(
     TEMPLATES_DIR,
