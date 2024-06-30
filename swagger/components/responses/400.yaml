@@ -1,0 +1,15 @@
+description: Wrong id
+content:
+  application/json:
+    schema:
+      type: object
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: Wrong id 65e4decdd286b30065d54a00

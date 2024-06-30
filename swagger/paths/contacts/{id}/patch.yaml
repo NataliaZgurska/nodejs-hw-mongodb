@@ -1,0 +1,81 @@
+#/swagger/paths/contacts/putch.yaml
+tags:
+  - Contacts
+summary: Update contact
+operationId: updateContact
+description: 'Update a contact with payload'
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+      example: '65ca67e7ae7f10c88b598384'
+requestBody:
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        required:
+          - name
+          - phoneNumber
+          - email
+          - isFavourite
+          - contactType
+          - userId
+          - photo
+        properties:
+          name:
+            description: "Contacts's name"
+            type: string
+            example: 'John Doe'
+          phoneNumber:
+            description: "Contacts's phoneNumber"
+            type: string
+            example: '123-12-14'
+          email:
+            description: "Contacts's email"
+            type: string
+            example: jojndoe@example.com
+          isFavourite:
+            description: 'Is this contact favorite: true or fasle'
+            type: boolean
+            example: false
+          contactType:
+            description: 'Contact type should be work, home or personal'
+            type: string
+            enum: ['work', 'home', 'personal']
+            example: 'work'
+          userId:
+            description: "Contacts's user id"
+            type: string
+            example: 65e4decdd286b30065d54af9
+          photo:
+            description: "Contacts''s photo"
+            type: string
+            format: binary
+responses:
+  '200':
+    description: Successfully patched contact!
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully patched contact!
+            data:
+              type: object
+              $ref: ..\..\components\schemas\contact.yaml
+  '404':
+    $ref: '../../../components/responses/404.yaml'
