@@ -1,5 +1,3 @@
-# swagger/components/schemas/student.yaml
-
 type: object
 required:
   - _id
@@ -34,12 +32,15 @@ properties:
   contactType:
     description: 'Contact type: work, home or personal'
     type: string
-    enum: ['work', 'home', 'personal']
-  userId:
-    description: "Contacts's user id"
-    type: string
-    example: 65e4decdd286b30065d54af9
+    enum:
+      - work
+      - home
+      - personal
   photo:
     description: "Link to Contacts's photo"
     type: string
     example: <https://res.cloudinary.com/dwruae8g1/image/upload/v1719324518/upload.jpg>
+  userId:
+    description: "Contacts's user id"
+    type: string
+    example: 56e4dabcd286b30065d54xy5

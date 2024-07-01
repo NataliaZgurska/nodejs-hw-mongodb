@@ -16,5 +16,21 @@ parameters:
 responses:
   '204':
     description: 'Contact deleted'
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 204
   '404':
     $ref: '../../../components/responses/404.yaml'
+  '403':
+    $ref: '../../../components/responses/403.yaml'
+  '400':
+    $ref: '../../../components/responses/400.yaml'

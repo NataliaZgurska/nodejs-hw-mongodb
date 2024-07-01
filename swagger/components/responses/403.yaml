@@ -1,4 +1,4 @@
-description: Contact with such id did not found
+description: This contact does not belong to this user
 content:
   application/json:
     schema:
@@ -6,10 +6,11 @@ content:
       required:
         - status
         - message
+        - data
       properties:
         status:
           type: integer
-          example: 404
+          example: 403
         message:
           type: string
-          example: Contact with id 65e4decdd286b30065d54a00 did not found
+          example: This is not your contact!

@@ -71,7 +71,7 @@ export const upsertContact = async (
     userId: contactOwnerId,
   });
   if (!contact) {
-    throw createHttpError(403, 'This is not you contact!');
+    throw createHttpError(403, 'This is not your contact!');
   }
 
   const rawResult = await ContactsCollection.findByIdAndUpdate(
@@ -83,7 +83,6 @@ export const upsertContact = async (
       ...options,
     },
   );
-
   return {
     contact: rawResult.value,
     isNew: !rawResult?.lastErrorObject?.updatedExisting,
@@ -96,7 +95,7 @@ export const deleteContactById = async (contactId, contactOwnerId) => {
     userId: contactOwnerId,
   });
   if (!contact) {
-    throw createHttpError(403, 'This is not you contact!');
+    throw createHttpError(403, 'This is not your contact!');
   }
 
   ContactsCollection.findByIdAndDelete({

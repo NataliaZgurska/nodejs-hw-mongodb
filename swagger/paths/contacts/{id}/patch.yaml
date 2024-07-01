@@ -1,4 +1,3 @@
-#/swagger/paths/contacts/putch.yaml
 tags:
   - Contacts
 summary: Update contact
@@ -18,42 +17,41 @@ requestBody:
     multipart/form-data:
       schema:
         type: object
-        required:
-          - name
-          - phoneNumber
-          - email
-          - isFavourite
-          - contactType
-          - userId
-          - photo
+        # required:
+        # - name
+        # - phoneNumber
+        # - email
+        # - isFavourite
+        # - contactType
+        # - userId
+        # - photo
         properties:
           name:
-            description: "Contacts's name"
+            description: "Contact's name"
             type: string
             example: 'John Doe'
           phoneNumber:
-            description: "Contacts's phoneNumber"
+            description: "Contact's phoneNumber"
             type: string
             example: '123-12-14'
           email:
-            description: "Contacts's email"
+            description: "Contact's email"
             type: string
             example: jojndoe@example.com
           isFavourite:
-            description: 'Is this contact favorite: true or fasle'
+            description: 'Is this contact favorite: true or fasle (default: false)'
             type: boolean
             example: false
           contactType:
-            description: 'Contact type should be work, home or personal'
+            description: 'Contact type should be work, home or personal (default: personal)'
             type: string
-            enum: ['work', 'home', 'personal']
+            enum:
+              - work
+              - home
+              - personal
             example: 'work'
-          userId:
-            description: "Contacts's user id"
-            type: string
-            example: 65e4decdd286b30065d54af9
           photo:
-            description: "Contacts''s photo"
+            description: "Contact's photo"
             type: string
             format: binary
 responses:
@@ -76,6 +74,8 @@ responses:
               example: Successfully patched contact!
             data:
               type: object
-              $ref: ..\..\components\schemas\contact.yaml
+              $ref: ..\..\..\components\schemas\contact.yaml
   '404':
     $ref: '../../../components/responses/404.yaml'
+  '400':
+    $ref: '../../../components/responses/400.yaml'

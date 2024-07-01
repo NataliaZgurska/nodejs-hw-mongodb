@@ -1,5 +1,3 @@
-#/swagger/paths/contacts/get.yaml
-
 tags:
   - Contacts
 summary: Get list of contacts
@@ -93,4 +91,3 @@ responses:
                   example: true
   '401':
     $ref: '../../components/responses/401.yaml'
-
