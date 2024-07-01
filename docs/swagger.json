@@ -239,7 +239,7 @@
         },
         "responses": {
           "201": {
-            "description": "Creates a contact",
+            "description": "Created a contact",
             "content": {
               "application/json": {
                 "schema": {
@@ -498,6 +498,98 @@
           }
         }
       }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Register User",
+        "operationId": "registerUser",
+        "description": "Create a user account",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "name": {
+                    "description": "User's name",
+                    "type": "string",
+                    "example": "Lee Camp"
+                  },
+                  "email": {
+                    "description": "User's email",
+                    "type": "string",
+                    "example": "leecamp@example.com"
+                  },
+                  "password": {
+                    "description": "User's password",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created an acount for user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 201
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully registered a user!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "name",
+                        "email"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "example": "Lee Camp"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "leecamp@example.com"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -648,7 +740,7 @@
                 },
                 "message": {
                   "type": "string",
-                  "example": "This is not you contact!"
+                  "example": "This is not your contact!"
                 }
               }
             }
@@ -656,7 +748,7 @@
         }
       },
       "404": {
-        "description": "Contact with id not found",
+        "description": "Contact with such id did not found",
         "content": {
           "application/json": {
             "schema": {
@@ -672,7 +764,32 @@
                 },
                 "message": {
                   "type": "string",
-                  "example": "Contact with id 65e4decdd286b30065d54a00 not found"
+                  "example": "Contact with id 65e4decdd286b30065d54a00 did not found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "409": {
+        "description": "This Email is in use",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "status",
+                "message",
+                "data"
+              ],
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 409
+                },
+                "message": {
+                  "type": "string",
+                  "example": "This Email is in use!"
                 }
               }
             }

@@ -1,0 +1,22 @@
+type: object
+required:
+  - _id
+  - name
+  - email
+  - password
+properties:
+  _id:
+    description: "User's id"
+    type: string
+    example: 56e4dabcd286b30065d54xy5
+  name:
+    description: "User's name. Should be no less the 3 symbols and no more than 30 symbols."
+    type: string
+    example: 'Lee Camp'
+  email:
+    description: "User's email"
+    type: string
+    example: leecamp@example.com
+  password:
+    description: 'User password'
+    type: string
