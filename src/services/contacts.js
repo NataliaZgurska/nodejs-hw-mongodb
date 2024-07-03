@@ -98,7 +98,5 @@ export const deleteContactById = async (contactId, contactOwnerId) => {
     throw createHttpError(403, 'This is not your contact!');
   }
 
-  ContactsCollection.findByIdAndDelete({
-    _id: contactId,
-  });
+  await ContactsCollection.findByIdAndDelete(contactId);
 };
