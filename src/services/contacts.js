@@ -95,7 +95,7 @@ export const deleteContactById = async (contactId, contactOwnerId) => {
     userId: contactOwnerId,
   });
   if (!contact) {
-    throw createHttpError(403, 'This is not your contact!');
+    throw createHttpError(403, 'Yuo have not such contact!');
   }
 
   await ContactsCollection.findByIdAndDelete(contactId);
