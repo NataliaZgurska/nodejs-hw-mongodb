@@ -39,21 +39,7 @@ export const getContactByIdController = async (req, res) => {
   const id = req.params.contactId;
   const contactOwnerId = req.user._id;
 
-  if (!mongoose.isValidObjectId(id)) {
-    return res.status(400).json({
-      status: 400,
-      message: `Wrong id ${id}!`,
-    });
-  }
-
   const contact = await getContactsById(id, contactOwnerId);
-
-  if (!contact) {
-    return res.status(404).json({
-      status: 404,
-      message: `Contact with id ${id} not found!`,
-    });
-  }
 
   res.json({
     status: 200,
@@ -99,22 +85,11 @@ export const patchContactController = async (req, res) => {
     }
   }
 
-  if (!mongoose.isValidObjectId(contactId)) {
-    return res.status(400).json({
-      status: 400,
-      message: `Wrong id ${contactId}!`,
-    });
-  }
-
   const { contact } = await upsertContact(
     contactId,
     { ...req.body, photo: photoUrl },
     contactOwnerId,
   );
-  if (!contact) {
-    next(createHttpError(404, 'contact not found'));
-    return;
-  }
 
   res.status(200).json({
     status: 200,
@@ -137,13 +112,6 @@ export const putContactController = async (req, res) => {
     }
   }
 
-  if (!mongoose.isValidObjectId(contactId)) {
-    return res.status(400).json({
-      status: 400,
-      message: `Wrong id ${contactId}!`,
-    });
-  }
-
   const { isNew, contact } = await upsertContact(
     contactId,
     { ...req.body, photo: photoUrl },
@@ -152,11 +120,6 @@ export const putContactController = async (req, res) => {
       upsert: true,
     },
   );
-
-  if (!contact) {
-    next(createHttpError(404, 'contact not found'));
-    return;
-  }
 
   const status = isNew ? 201 : 200;
   res.status(status).json({
@@ -169,13 +132,6 @@ export const putContactController = async (req, res) => {
 export const deleteContactByIdController = async (req, res, next) => {
   const { contactId } = req.params;
   const contactOwnerId = req.user._id;
-
-  if (!mongoose.isValidObjectId(contactId)) {
-    return res.status(400).json({
-      status: 400,
-      message: `Wrong id ${contactId}!`,
-    });
-  }
 
   const contact = await deleteContactById(contactId, contactOwnerId);
   res.status(204).send();

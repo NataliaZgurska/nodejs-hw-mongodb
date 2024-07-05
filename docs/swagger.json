@@ -267,6 +267,9 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
           "401": {
             "$ref": "#/components/responses/401"
           }
@@ -329,6 +332,9 @@
           },
           "400": {
             "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
           },
           "404": {
             "$ref": "#/components/responses/404"
@@ -436,6 +442,9 @@
           },
           "400": {
             "$ref": "#/components/responses/400"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
           },
           "404": {
             "$ref": "#/components/responses/404"
@@ -606,11 +615,7 @@
           "_id",
           "name",
           "phoneNumber",
-          "email",
-          "isFavourite",
-          "contactType",
-          "userId",
-          "photo"
+          "email"
         ],
         "properties": {
           "_id": {
@@ -662,7 +667,7 @@
     },
     "responses": {
       "400": {
-        "description": "Wrong id",
+        "description": "Bad request (something wrong in id or request body)",
         "content": {
           "application/json": {
             "schema": {
@@ -678,7 +683,7 @@
                 },
                 "message": {
                   "type": "string",
-                  "example": "Wrong id 65e4decdd286b30065d54a00"
+                  "example": "Bad request (something wrong in id or request body)"
                 }
               }
             }
@@ -740,7 +745,7 @@
                 },
                 "message": {
                   "type": "string",
-                  "example": "This is not your contact!"
+                  "example": "You have not such contact!!"
                 }
               }
             }
@@ -764,7 +769,7 @@
                 },
                 "message": {
                   "type": "string",
-                  "example": "Contact with id 65e4decdd286b30065d54a00 did not found"
+                  "example": "Contact not found"
                 }
               }
             }

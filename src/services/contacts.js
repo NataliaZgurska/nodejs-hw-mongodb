@@ -3,6 +3,21 @@ import { ContactsCollection } from '../db/models/contact.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { SORT_ORDER } from '../constants/index.js';
 
+const verifyContactOwnership = async (contactId, contactOwnerId) => {
+  const contact = await ContactsCollection.findOne({
+    _id: contactId,
+  });
+  if (!contact) {
+    throw createHttpError(404, `Contact not found!`);
+  }
+
+  const areEqual = contactOwnerId.equals(contact.userId);
+  if (!areEqual) {
+    throw createHttpError(403, 'You have not such contact!');
+  }
+  return contact;
+};
+
 export const getAllContacts = async ({
   page = 1,
   perPage = 10,
@@ -44,9 +59,10 @@ export const getAllContacts = async ({
 };
 
 export const getContactsById = async (contactId, contactOwnerId) => {
+  await verifyContactOwnership(contactId, contactOwnerId);
+
   const contact = await ContactsCollection.findOne({
     _id: contactId,
-    userId: contactOwnerId,
   });
 
   return contact;
@@ -66,13 +82,7 @@ export const upsertContact = async (
   contactOwnerId,
   options = {},
 ) => {
-  const contact = await ContactsCollection.findOne({
-    _id: contactId,
-    userId: contactOwnerId,
-  });
-  if (!contact) {
-    throw createHttpError(403, 'This is not your contact!');
-  }
+  await verifyContactOwnership(contactId, contactOwnerId);
 
   const rawResult = await ContactsCollection.findByIdAndUpdate(
     contactId,
@@ -90,13 +100,6 @@ export const upsertContact = async (
 };
 
 export const deleteContactById = async (contactId, contactOwnerId) => {
-  const contact = await ContactsCollection.findOne({
-    _id: contactId,
-    userId: contactOwnerId,
-  });
-  if (!contact) {
-    throw createHttpError(403, 'Yuo have not such contact!');
-  }
-
+  await verifyContactOwnership(contactId, contactOwnerId);
   await ContactsCollection.findByIdAndDelete(contactId);
 };

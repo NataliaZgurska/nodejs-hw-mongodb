@@ -1,4 +1,4 @@
-description: Wrong id
+description: Bad request (something wrong in id or request body)
 content:
   application/json:
     schema:
@@ -12,4 +12,4 @@ content:
           example: 400
         message:
           type: string
-          example: Wrong id 65e4decdd286b30065d54a00
+          example: Bad request (something wrong in id or request body)

@@ -13,4 +13,4 @@ content:
           example: 403
         message:
           type: string
-          example: This is not your contact!
+          example: You have not such contact!!
