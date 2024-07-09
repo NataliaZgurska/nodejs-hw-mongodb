@@ -25,26 +25,18 @@ const createSession = () => {
   };
 };
 
-// export const registerUser = async (payload) => {
-//   const existingUser = await User.findOne({ email: payload.email });
-//   if (existingUser) throw createHttpError(409, 'This Email is in use');
-
-//   const encryptedPassword = await bcrypt.hash(payload.password, 10);
-
-//   return await User.create({
-//     ...payload,
-//     password: encryptedPassword,
-//   });
-// };
-
 export const findUserByEmail = (email) => User.findOne({ email });
 
-export const updateUserWithAToken = async (userId) => {
-  const token = jwt.sign({ id: userId }, env('JWT_SECRET'), {
-    expiresIn: '30m',
-  });
-  return await User.findByIdAndUpdate(userId, { token });
+export const checkPassword = async (inputPassword, storedPassword) => {
+  return await bcrypt.compare(inputPassword, storedPassword);
 };
+
+// export const updateUserWithAToken = async (userId) => {
+//   const token = jwt.sign({ id: userId }, env('JWT_SECRET'), {
+//     expiresIn: '30m',
+//   });
+//   return await User.findByIdAndUpdate(userId, { token });
+// };
 
 export const registerUser = async (userData) => {
   const { name, email, password } = userData;
@@ -60,17 +52,7 @@ export const registerUser = async (userData) => {
   return newUser;
 };
 
-export const loginUser = async ({ email, password }) => {
-  const user = await User.findOne({ email });
-  if (!user) {
-    throw createHttpError(401, 'User not found');
-  }
-
-  const isEqual = await bcrypt.compare(password, user.password);
-  if (!isEqual) {
-    throw createHttpError(401, 'Unauthorized');
-  }
-
+export const loginUser = async (user) => {
   await Session.deleteOne({ userId: user._id });
 
   return await Session.create({

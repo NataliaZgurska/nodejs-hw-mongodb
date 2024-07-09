@@ -1,5 +1,7 @@
+import createHttpError from 'http-errors';
 import { THIRTY_DAYS } from '../constants/index.js';
 import {
+  checkPassword,
   findUserByEmail,
   loginUser,
   logoutUser,
@@ -20,26 +22,15 @@ const setupSessionCookies = (res, session) => {
   });
 };
 
-// export const registerUserController = async (req, res) => {
-//   const user = await registerUser(req.body);
-
-//   res.status(201).json({
-//     status: 201,
-//     message: 'Successfully registered a user!',
-//     data: user,
-//   });
-// };
-
 export const registerUserController = async (req, res, next) => {
   const isExisting = await findUserByEmail(req.body.email);
-
   if (isExisting) {
     throw createHttpError(409, 'User with such email already exists.');
   }
 
   const user = await registerUser(req.body);
 
-  const session = await loginUser(req.body);
+  const session = await loginUser(user);
   setupSessionCookies(res, session);
 
   res.status(201).json({
@@ -49,22 +40,22 @@ export const registerUserController = async (req, res, next) => {
 };
 
 export const loginUserController = async (req, res) => {
-  const session = await loginUser(req.body);
+  const user = await findUserByEmail(req.body.email);
+  if (!user) {
+    throw createHttpError(401, 'User with such email does not exists.');
+  }
+  const correctPasword = await checkPassword(req.body.password, user.password);
+  if (!correctPasword) {
+    throw createHttpError(401, 'Unauthorized: wrong password');
+  }
 
+  const session = await loginUser(user);
   setupSessionCookies(res, session);
 
   res.status(200).json({
     user: { name: user.name, email: user.email },
     accessToken: session.accessToken,
   });
-
-  // res.json({
-  //   status: 200,
-  //   message: 'User is logged in!',
-  //   data: {
-  //     accessToken: session.accessToken,
-  //   },
-  // });
 };
 
 export const logoutController = async (req, res) => {
@@ -87,11 +78,14 @@ export const refreshTokenController = async (req, res) => {
 
   setupSessionCookies(res, session);
 
-  res.json({
-    status: 200,
-    message: 'Token refreshed successfully!',
-    data: { accessToken: session.accessToken },
+  res.status(200).json({
+    accessToken: session.accessToken,
   });
+  // res.json({
+  //   status: 200,
+  //   message: 'Token refreshed successfully!',
+  //   data: { accessToken: session.accessToken },
+  // });
 };
 
 export const requestResetEmailController = async (req, res) => {
