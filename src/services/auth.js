@@ -57,7 +57,6 @@ export const registerUser = async (userData) => {
     password: hashedPassword,
   });
 
-  // return await updateUserWithAToken(newUser._id);
   return newUser;
 };
 

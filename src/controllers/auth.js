@@ -45,7 +45,6 @@ export const registerUserController = async (req, res, next) => {
   res.status(201).json({
     user: { name: user.name, email: user.email },
     accessToken: session.accessToken,
-    // token: user.token,
   });
 };
 
@@ -54,13 +53,18 @@ export const loginUserController = async (req, res) => {
 
   setupSessionCookies(res, session);
 
-  res.json({
-    status: 200,
-    message: 'User is logged in!',
-    data: {
-      accessToken: session.accessToken,
-    },
+  res.status(200).json({
+    user: { name: user.name, email: user.email },
+    accessToken: session.accessToken,
   });
+
+  // res.json({
+  //   status: 200,
+  //   message: 'User is logged in!',
+  //   data: {
+  //     accessToken: session.accessToken,
+  //   },
+  // });
 };
 
 export const logoutController = async (req, res) => {
