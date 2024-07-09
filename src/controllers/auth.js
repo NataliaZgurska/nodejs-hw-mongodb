@@ -1,5 +1,6 @@
 import { THIRTY_DAYS } from '../constants/index.js';
 import {
+  findUserByEmail,
   loginUser,
   logoutUser,
   refreshSession,
@@ -19,13 +20,32 @@ const setupSessionCookies = (res, session) => {
   });
 };
 
-export const registerUserController = async (req, res) => {
+// export const registerUserController = async (req, res) => {
+//   const user = await registerUser(req.body);
+
+//   res.status(201).json({
+//     status: 201,
+//     message: 'Successfully registered a user!',
+//     data: user,
+//   });
+// };
+
+export const registerUserController = async (req, res, next) => {
+  const isExisting = await findUserByEmail(req.body.email);
+
+  if (isExisting) {
+    throw createHttpError(409, 'User with such email already exists.');
+  }
+
   const user = await registerUser(req.body);
 
+  const session = await loginUser(req.body);
+  setupSessionCookies(res, session);
+
   res.status(201).json({
-    status: 201,
-    message: 'Successfully registered a user!',
-    data: user,
+    user: { name: user.name, email: user.email },
+    accessToken: session.accessToken,
+    // token: user.token,
   });
 };
 

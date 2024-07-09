@@ -25,16 +25,40 @@ const createSession = () => {
   };
 };
 
-export const registerUser = async (payload) => {
-  const existingUser = await User.findOne({ email: payload.email });
-  if (existingUser) throw createHttpError(409, 'This Email is in use');
+// export const registerUser = async (payload) => {
+//   const existingUser = await User.findOne({ email: payload.email });
+//   if (existingUser) throw createHttpError(409, 'This Email is in use');
 
-  const encryptedPassword = await bcrypt.hash(payload.password, 10);
+//   const encryptedPassword = await bcrypt.hash(payload.password, 10);
 
-  return await User.create({
-    ...payload,
-    password: encryptedPassword,
+//   return await User.create({
+//     ...payload,
+//     password: encryptedPassword,
+//   });
+// };
+
+export const findUserByEmail = (email) => User.findOne({ email });
+
+export const updateUserWithAToken = async (userId) => {
+  const token = jwt.sign({ id: userId }, env('JWT_SECRET'), {
+    expiresIn: '30m',
   });
+  return await User.findByIdAndUpdate(userId, { token });
+};
+
+export const registerUser = async (userData) => {
+  const { name, email, password } = userData;
+
+  const hashedPassword = await bcrypt.hash(password, 5);
+
+  const newUser = await User.create({
+    name,
+    email,
+    password: hashedPassword,
+  });
+
+  // return await updateUserWithAToken(newUser._id);
+  return newUser;
 };
 
 export const loginUser = async ({ email, password }) => {
