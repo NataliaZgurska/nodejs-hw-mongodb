@@ -28,11 +28,7 @@ export const getAllContactsController = async (req, res) => {
     filter,
     contactOwnerId,
   });
-  res.json({
-    status: 200,
-    message: 'Successfully found contacts!',
-    data: contacts,
-  });
+  res.status(200).json(contacts);
 };
 
 export const getContactByIdController = async (req, res) => {
@@ -64,11 +60,13 @@ export const createContactController = async (req, res) => {
     req.user._id,
   );
 
-  res.status(201).json({
-    status: 201,
-    message: 'Successfully created a contact!',
-    data: contact,
-  });
+  res.status(201).json(contact);
+
+  // res.status(201).json({
+  //   status: 201,
+  //   message: 'Successfully created a contact!',
+  //   data: contact,
+  // });
 };
 
 export const patchContactController = async (req, res) => {

@@ -20,7 +20,7 @@ const verifyContactOwnership = async (contactId, contactOwnerId) => {
 
 export const getAllContacts = async ({
   page = 1,
-  perPage = 10,
+  perPage = 20,
   sortOrder = SORT_ORDER.ASC,
   sortBy = '_id',
   filter = {},
@@ -53,7 +53,7 @@ export const getAllContacts = async ({
   const paginationData = calculatePaginationData(contactsCount, perPage, page);
 
   return {
-    data: contacts,
+    contacts,
     ...paginationData,
   };
 };
