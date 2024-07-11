@@ -30,12 +30,12 @@ export const registerUserController = async (req, res, next) => {
 
   const user = await registerUser(req.body);
 
-  const session = await loginUser(user);
-  setupSessionCookies(res, session);
+  // const session = await loginUser(user);
+  // setupSessionCookies(res, session);
 
   res.status(201).json({
     user: { name: user.name, email: user.email },
-    accessToken: session.accessToken,
+    // accessToken: session.accessToken,
   });
 };
 

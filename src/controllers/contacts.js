@@ -3,10 +3,10 @@ import {
   createContact,
   deleteContactById,
   getAllContacts,
-  getContactsById,
+  // getContactsById,
   upsertContact,
 } from '../services/contacts.js';
-import mongoose from 'mongoose';
+
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';

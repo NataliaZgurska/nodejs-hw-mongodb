@@ -14,27 +14,7 @@ export const createContactSchema = Joi.object({
     'any.required': 'Contactnumber is required',
   }),
 
-  email: Joi.string()
-    .email({
-      minDomainSegments: 2,
-      tlds: { allow: ['com', 'net'] },
-    })
-    .messages({
-      'string.base': '"email" must be a string',
-      'string.email': '"email" must be a valid email address',
-    }),
-
-  isFavourite: Joi.boolean().messages({
-    'boolean.base': '"isFavourite" must be a boolean value',
-  }),
-
-  contactType: Joi.string().valid('work', 'home', 'personal').messages({
-    'string.value': 'Contacttype should be one of work, home or personal',
-    'any.required': 'Contacttype is required',
-  }),
   userId: Joi.string(),
-
-  photo: Joi.string(),
 });
 
 export const updateContactSchema = Joi.object({
@@ -49,24 +29,5 @@ export const updateContactSchema = Joi.object({
     'string.max': 'Contactnumber should have at most {#limit} characters',
   }),
 
-  email: Joi.string()
-    .email({
-      minDomainSegments: 2,
-      tlds: { allow: ['com', 'net'] },
-    })
-    .messages({
-      'string.base': '"email" must be a string',
-      'string.email': '"email" must be a valid email address',
-    }),
-
-  isFavourite: Joi.boolean().messages({
-    'boolean.base': '"isFavourite" must be a boolean value',
-  }),
-
-  contactType: Joi.string().valid('work', 'home', 'personal').messages({
-    'string.value': 'Contacttype should be one of work, home or personal',
-  }),
-
   userId: Joi.string(),
-  photo: Joi.string(),
 });

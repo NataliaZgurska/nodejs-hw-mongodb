@@ -4,9 +4,9 @@ import {
   createContactController,
   deleteContactByIdController,
   getAllContactsController,
-  getContactByIdController,
+  // getContactByIdController,
   patchContactController,
-  putContactController,
+  // putContactController,
 } from '../controllers/contacts.js';
 import { validateBody } from '../middleware/validateBody.js';
 import { validateObjectId } from '../middleware/validateObjectId.js';
@@ -23,11 +23,11 @@ contactsRouter.use(authenticate);
 
 contactsRouter.get('/', ctrlWrapper(getAllContactsController));
 
-contactsRouter.get(
-  '/:contactId',
-  validateObjectId,
-  ctrlWrapper(getContactByIdController),
-);
+// contactsRouter.get(
+//   '/:contactId',
+//   validateObjectId,
+//   ctrlWrapper(getContactByIdController),
+// );
 
 contactsRouter.post(
   '/',
@@ -44,13 +44,13 @@ contactsRouter.patch(
   ctrlWrapper(patchContactController),
 );
 
-contactsRouter.put(
-  '/:contactId',
-  upload.single('photo'),
-  validateObjectId,
-  validateBody(updateContactSchema),
-  ctrlWrapper(putContactController),
-);
+// contactsRouter.put(
+//   '/:contactId',
+//   upload.single('photo'),
+//   validateObjectId,
+//   validateBody(updateContactSchema),
+//   ctrlWrapper(putContactController),
+// );
 
 contactsRouter.delete(
   '/:contactId',

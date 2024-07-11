@@ -31,13 +31,6 @@ export const checkPassword = async (inputPassword, storedPassword) => {
   return await bcrypt.compare(inputPassword, storedPassword);
 };
 
-// export const updateUserWithAToken = async (userId) => {
-//   const token = jwt.sign({ id: userId }, env('JWT_SECRET'), {
-//     expiresIn: '30m',
-//   });
-//   return await User.findByIdAndUpdate(userId, { token });
-// };
-
 export const registerUser = async (userData) => {
   const { name, email, password } = userData;
 
