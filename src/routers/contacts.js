@@ -4,7 +4,7 @@ import {
   createContactController,
   deleteContactByIdController,
   getAllContactsController,
-  // getContactByIdController,
+  getContactByIdController,
   patchContactController,
   // putContactController,
 } from '../controllers/contacts.js';
@@ -23,11 +23,11 @@ contactsRouter.use(authenticate);
 
 contactsRouter.get('/', ctrlWrapper(getAllContactsController));
 
-// contactsRouter.get(
-//   '/:contactId',
-//   validateObjectId,
-//   ctrlWrapper(getContactByIdController),
-// );
+contactsRouter.get(
+  '/:contactId',
+  validateObjectId,
+  ctrlWrapper(getContactByIdController),
+);
 
 contactsRouter.post(
   '/',

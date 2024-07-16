@@ -33,12 +33,12 @@ export const getAllContacts = async ({
     userId: contactOwnerId,
   });
 
-  // if (filter.contactType) {
-  //   contactsQuery.where('contactType').equals(filter.contactType);
-  // }
-  // if (filter.isFavourite) {
-  //   contactsQuery.where('isFavourite').equals(filter.isFavourite);
-  // }
+  if (filter.contactType) {
+    contactsQuery.where('contactType').equals(filter.contactType);
+  }
+  if (filter.isFavourite) {
+    contactsQuery.where('isFavourite').equals(filter.isFavourite);
+  }
 
   const [contactsCount, contacts] = await Promise.all([
     ContactsCollection.find().merge(contactsQuery).countDocuments(),
@@ -58,15 +58,15 @@ export const getAllContacts = async ({
   };
 };
 
-// export const getContactsById = async (contactId, contactOwnerId) => {
-//   await verifyContactOwnership(contactId, contactOwnerId);
+export const getContactsById = async (contactId, contactOwnerId) => {
+  await verifyContactOwnership(contactId, contactOwnerId);
 
-//   const contact = await ContactsCollection.findOne({
-//     _id: contactId,
-//   });
+  const contact = await ContactsCollection.findOne({
+    _id: contactId,
+  });
 
-//   return contact;
-// };
+  return contact;
+};
 
 export const createContact = async (payload, userId) => {
   const contact = await ContactsCollection.create({
